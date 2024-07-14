@@ -1,0 +1,17 @@
+{
+  "name": "challenge13",
+  "version": "1.0.0",
+  "description": "A repo for my Challenge 13 assignment for my bootcamp at Vanderbilt university.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.5.1"
+  }
+}

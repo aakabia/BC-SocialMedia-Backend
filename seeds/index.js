@@ -17,13 +17,24 @@ connection.once("open", async () => {
   let userCheck = await connection.db
     .listCollections({ name: "users" })
     .toArray();
+
+    let thoughtsCheck = await connection.db
+    .listCollections({ name: "thoughts" })
+    .toArray();
+
+
   if (userCheck.length) {
     await connection.dropCollection("users");
-  }
-  // Above, we check if " users collection exists and if it does we drop it."
+  };
+
+  if (thoughtsCheck.length) {
+    await connection.dropCollection("thoughts");
+  };
+
+  // Above, we check if " users" and "thoughts" collection exists and if it does we drop it.
   await seedUserData();
 
-  // Above, we seed our db if no users collection exists
+  // Above, we seed our db if no users or thoughts collection exists
 
   console.info("Seeding complete! 🌱");
   process.exit(0);

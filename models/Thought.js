@@ -1,7 +1,9 @@
 const { Schema, model } = require("mongoose");
+const Reactions = require('./Reaction');
 
 
 // Above,  we import schema and model from mongoose.
+// Also, we import our Reactions Schema.
 
 const thoughtSchema = new Schema(
   {
@@ -27,11 +29,8 @@ const thoughtSchema = new Schema(
       required: true,
     },
 
-    reactions: [
-      {
-        type: String,
-      },
-    ],
+    reactions: [Reactions],
+    // Above, we embed the reactions schema into the thoughts model.
   },
   {
     toJSON: {

@@ -58,6 +58,7 @@ const seedUserData = async () => {
     const newUsersWithThoughts = await seedThoughtData(newUsers, newThoughts);
     const newUsersWithFriendsAndThoughts = await seedThoughtData(newUsersWithFriends,newThoughts);
     // Above, we seed the thought data to each new user with the seedsThoughtdata function.
+    // This will mactch thoughts to their respected user.
 
 
 
@@ -72,7 +73,7 @@ const seedUserData = async () => {
     newUsersWithThoughts[1].friends.push(newUsersWithFriendsAndThoughts[0]._id);
     newUsersWithThoughts[2].friends.push(newUsersWithFriendsAndThoughts[1]._id);
 
-    // Above, we assign friendships to the newusers that were not created with friends
+    // Above, we assign friendships back to the users that were not created with friends
 
     await Promise.all([
       newUsersWithThoughts[0].save(),

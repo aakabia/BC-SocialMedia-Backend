@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('./config/connection');
+const routes = require('./controllers');
 
 
 
@@ -13,8 +14,9 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(routes);
 
-// Above, we allow express to use json and urlencoded. 
+// Above, we allow express to use our routes, json and urlencoded. 
 
 
 

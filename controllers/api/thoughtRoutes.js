@@ -175,6 +175,7 @@ router.put("/", async (req, res) => {
     console.error(err);
   }
 });
+// Above, we update a thought.
 
 router.put("/reactions", async (req, res) => {
   try {
@@ -213,5 +214,97 @@ router.put("/reactions", async (req, res) => {
     console.error(err);
   }
 });
+// Above, we update a reaction.
+
+router.delete("/reactions", async (req, res) => {
+  try {
+    if (!req.body._id && req.body.reactionId) {
+      return res.status(404).json({
+        message:
+          "Error: A thought and reaction id is needed to delete a reaction!",
+      });
+    }
+
+    const thought = await Thoughts.findOne({ _id: req.body._id });
+    // Above, we find the user to check if friendId is in the friends array
+
+    if (!thought) {
+      return res.status(404).json({ message: "Error: Thought not found." });
+    }
+
+    if (
+      !thought.reactions.some((r) => r.reactionId.equals(req.body.reactionId))
+    ) {
+      return res
+        .status(404)
+        .json({
+          message: "Error: Reaction not found in thought's reactions list.",
+        });
+    }
+    // Above, we Check if the reactionid is in the reactions array
+    // Reactions contains objects so includes will not work, instead we must loop through each reaction with "some" or any other array method.
+
+    const deletedReaction = await Thoughts.findOneAndUpdate(
+      { _id: req.body._id },
+
+      {
+        $pull: { reactions: { reactionId: req.body.reactionId } },
+
+        // Above, we update the thought the reaction is part of.
+        // We use pull to delete from the reactions array.
+      },
+
+      { new: true }
+    );
+
+    // Above, we delete a reaction with the req.body.
+
+    if (!deletedReaction) {
+      return res.status(404).json({ message: "Error: No reaction deleted." });
+    }
+
+    // Above is to check if our reaction is updated.
+
+    res.json({ message: "Reaction delete Successfull!" });
+    // Above is our response once a reaction is deleted.
+  } catch (err) {
+    console.error(err);
+  }
+});
+// Abve, we delete a reaction.
+
+router.delete("/", async (req, res) => {
+  try {
+    if (!req.body._id) {
+      return res.status(404).json({
+        message: "Error: A thought id is needed to delete a thought!",
+      });
+    }
+
+    const thought = await Thoughts.findOne({ _id: req.body._id });
+
+    if (!thought) {
+      return res.status(404).json({ message: "Error: thought not found." });
+    }
+    // Above, we check if the thought exists before delete.
+
+    const deletedThought = await Thoughts.deleteOne({ _id: req.body._id });
+
+    // Above, we delete a reaction with the req.body.
+
+    if (!deletedThought) {
+      return res.status(404).json({ message: "Error: No Thought deleted." });
+    }
+
+    // Above is to check if our reaction is updated.
+
+    res.json({ message: "Thought delete Successfull!" });
+    // Above is our response once a reaction is deleted.
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// Above, we delete a thought.
 
 module.exports = router;

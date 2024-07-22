@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
     // Above, is how we send our response
   }
 });
-// Above, we get all users 
+// Above, we get all users
 
 router.get("/:id", async (req, res) => {
   try {
@@ -57,36 +57,67 @@ router.get("/:id", async (req, res) => {
 
 // Above, we get one user.
 
-router.post("/", async (req,res)=>{
-
+router.post("/", async (req, res) => {
   try {
     const newUser = await User.create(req.body);
 
     // Above, we create a new user with the req body.
-    
 
     if (!newUser) {
       return res
         .status(404)
-        .json({ message: 'Error: new user could not be created.' });
+        .json({ message: "Error: new user could not be created." });
     }
 
     // Above is to check if our new user is created.
 
-    res.json({ message: 'User created!' });
+    res.json({ message: "User created!" });
     // Above is our response once a user a created.
   } catch (err) {
     console.error(err);
   }
-
-
 });
 
-// Above, we create a new user. 
+// Above, we create a new user.
 
+router.put("/", async (req, res) => {
+  try {
+    if (!req.body._id) {
+      return res.status(404).json({
+        message: "Error: A user id needed to update a user!",
+      });
+    }
 
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: req.body._id },
 
+      {
+        $set: { userName: req.body.userName, email: req.body.email },
+        $push: { friends: { $each: req.body.friends } },
 
+        // Above, we update the username and email from the req.body with set.
+        // Also, we update the friends array  with push and each in order to add multiple freinds at once.
+      },
+
+      { new: true } // return the updated document
+    );
+
+    // Above, we create a new user with the req body.
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Error: No user updated." });
+    }
+
+    // Above is to check if our user is updated.
+
+    res.json({ message: "User update Successfull!" });
+    // Above is our response once a user is updated.
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// Above, we update a user.
 
 
 

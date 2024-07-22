@@ -119,10 +119,91 @@ router.put("/", async (req, res) => {
 
 // Above, we update a user.
 
+router.delete("/friends", async (req, res) => {
+  try {
+    if (!req.body._id && req.body.friendId) {
+      return res.status(404).json({
+        message: "Error: A user and friend id is needed to delete a reaction!",
+      });
+    }
 
+    const user = await User.findOne({ _id: req.body._id });
+    // Above, we find the user to check if friendId is in the friends array
+    if (!user) {
+      return res.status(404).json({ message: "Error: User not found." });
+    }
 
+    if (!user.friends.includes(req.body.friendId)) {
+      return res
+        .status(404)
+        .json({ message: "Error: Friend not found in user’s friends list." });
+    }
+    // Above, we Check if the friendId is in the friends array
+    // We can use includes here because the friends array includes only objects with primitve values of friendId's.
 
+    const deletedFriend = await User.findOneAndUpdate(
+      { _id: req.body._id },
 
+      { $pull: { friends: req.body.friendId } },
+      // Above, we update the user.
+      // We use pull to delete from the reactions array.
+
+      { new: true }
+    );
+
+    // Above, we delete a reaction with the req.body.
+
+    if (!deletedFriend) {
+      return res.status(404).json({ message: "Error: No friends deleted." });
+    }
+
+    // Above is to check if our reaction is updated.
+
+    res.json({ message: "Friend delete Successfull!" });
+    // Above is our response once a reaction is deleted.
+  } catch (err) {
+    console.error(err);
+  }
+});
+// Abve, we delete a friend.
+
+router.delete("/", async (req, res) => {
+  try {
+    if (!req.body._id) {
+      return res.status(404).json({
+        message: "Error: A user id is needed to delete a user!",
+      });
+    }
+
+    const user = await User.findOne({ _id: req.body._id });
+
+    if (!user) {
+      return res.status(404).json({ message: "Error: User not found." });
+    }
+    // Above, we check if the user exists before delete.
+
+    const deletedUser = await User.deleteOne({});
+
+    // Above, we delete a reaction with the req.body.
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "Error: No Thought deleted." });
+    }
+
+    // Above is to check if our reaction is updated.
+
+    res.json({ message: "User delete Successfull!" });
+    // Above is our response once a reaction is deleted.
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// Above, we delete a user.
+
+// noteToSelf: When using mongoose be aware of arrays with primitve values only or objects.
+// We have to acess them in different ways.
+// See "$pull" in delete route for reactions in thoughtRoutes vs "pull" in delete route for friends in UserRoutes.
 
 module.exports = router;
 

@@ -165,7 +165,7 @@ router.delete("/friends", async (req, res) => {
     console.error(err);
   }
 });
-// Abve, we delete a friend.
+// Above, we delete a friend.
 
 router.delete("/", async (req, res) => {
   try {
@@ -182,18 +182,18 @@ router.delete("/", async (req, res) => {
     }
     // Above, we check if the user exists before delete.
 
-    const deletedUser = await User.deleteOne({});
+    const deletedUser = await User.deleteOne({ _id: req.body._id});
 
-    // Above, we delete a reaction with the req.body.
+    // Above, we delete a user with the req.body._id
 
     if (!deletedUser) {
-      return res.status(404).json({ message: "Error: No Thought deleted." });
+      return res.status(404).json({ message: "Error: No User deleted." });
     }
 
-    // Above is to check if our reaction is updated.
+    
 
     res.json({ message: "User delete Successfull!" });
-    // Above is our response once a reaction is deleted.
+    // Above is our response once a user is deleted.
   } catch (err) {
     console.error(err);
   }
